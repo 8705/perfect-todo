@@ -4,4 +4,4 @@ require '../bootstrap.php';
 
 echo 'hello world!!!!!11回目';
 
-echo "jenkins test005";
+echo "jenkins test006";
