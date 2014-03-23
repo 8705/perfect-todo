@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `t_title` text NOT NULL,
   `t_content` text,
   `t_limit` datetime DEFAULT NULL,
-  `t_size` enum('long','middle','short') NOT NULL,
+  `t_size` enum('middle','short') NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `del_flg` int(11) NOT NULL DEFAULT '0',
