@@ -2,7 +2,7 @@
 
 require '../bootstrap.php';
 
-echo 'hello world!!!!!21回目';
+echo 'hello world!!!!!branch';
 
 echo "jenkins test006";
 
