@@ -23,13 +23,11 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `t_title` text NOT NULL,
   `t_content` text,
   `t_limit` datetime DEFAULT NULL,
-  `t_size` enum('long','middle','short') NOT NULL,
+  `t_size` enum('middle','short') NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `del_flg` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `id_idx` (`project_id`),
-  KEY `task_id` (`project_id`),
   KEY `project_id` (`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
