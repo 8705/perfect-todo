@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE IF NOT EXISTS `tasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `task_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
   `t_title` text NOT NULL,
   `t_content` text,
   `t_limit` datetime DEFAULT NULL,
@@ -52,4 +52,4 @@ ALTER TABLE `projects`
   ADD CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `tasks`
-  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `projects` (`id`);
+  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`);
