@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `p_content` text,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
-  `del_flg` int(11) NOT NULL DEFAULT '0',
+  `del_flg` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -23,13 +23,14 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `t_title` text NOT NULL,
   `t_content` text,
   `t_limit` datetime DEFAULT NULL,
-  `t_size` enum('middle','short') NOT NULL,
+  `t_size` enum('long','middle','short') NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
-  `del_flg` int(11) NOT NULL DEFAULT '0',
+  `del_flg` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `id_idx` (`task_id`),
-  KEY `task_id` (`task_id`)
+  KEY `id_idx` (`project_id`),
+  KEY `task_id` (`project_id`),
+  KEY `project_id` (`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `users`;
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `image` varchar(255) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
-  `del_flg` int(11) NOT NULL DEFAULT '0',
+  `del_flg` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `mail_UNIQUE` (`mail`)
