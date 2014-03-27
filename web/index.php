@@ -2,8 +2,5 @@
 
 require '../bootstrap.php';
 
-echo 'hello world!!!!!branch';
+echo '新しいフィーはーつくりまいた';
 
-echo "jenkins test006";
-
-echo "ビルドテスト！！"
