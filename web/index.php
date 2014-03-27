@@ -2,10 +2,7 @@
 
 require '../bootstrap.php';
 
-echo 'hello world!!!!!21回目';
 
-echo "jenkins test006";
 
-echo "ビルドテスト！！<br />";
-
-echo "初ブランチ！！";
+echo "feartureブランチ切った　ローカルで";
+echo "feartureブランチ切った　ローカルで２";
