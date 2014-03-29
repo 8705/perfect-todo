@@ -12,6 +12,7 @@ abstract class Application
     protected $response;
     protected $session;
     protected $db_manager;
+    protected $router;
 
     /**
      * コンストラクタ
@@ -22,7 +23,7 @@ abstract class Application
     {
         $this->setDebugMode($debug);
         $this->initialize();
-        $this->configure();
+        //$this->configure();
     }
 
     /**
