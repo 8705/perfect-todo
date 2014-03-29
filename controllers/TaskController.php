@@ -7,7 +7,7 @@
  */
 class TaskController extends Controller
 {
-    protected $auth_actions = array('index', 'signout', 'follow');
+   // protected $auth_actions = array('index', 'signout', 'follow');
 
     public function signupAction()
     {
@@ -76,13 +76,9 @@ class TaskController extends Controller
 
     public function indexAction()
     {
-        $user = $this->session->get('user');
-        $followings = $this->db_manager->get('User')
-            ->fetchAllFollowingsByUserId($user['id']);
-
+        $user = 'ishino';
         return $this->render(array(
             'user'       => $user,
-            'followings' => $followings,
         ));
     }
 

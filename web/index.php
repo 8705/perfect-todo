@@ -1,9 +1,7 @@
 <?php
 
 require '../bootstrap.php';
+require '../PerfectApplication.php';
 
-echo 'hello world!!!!!branch';
-
-
-echo "feartureブランチ切った　ローカルで";
-echo "feartureブランチ切った　ローカルで２";
+$app = new PerfectApplication(false);
+$app->run();
