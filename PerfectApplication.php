@@ -18,7 +18,7 @@ class PerfectApplication extends Application
     {
         return array(
             '/'
-                => array('controller' => 'task', 'action' => 'index'),
+                => array('controller' => 'project', 'action' => 'index'),
             '/:controller/'
                 => array('action' => 'index'),
             '/:controller/:action'
