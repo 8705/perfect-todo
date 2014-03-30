@@ -3,5 +3,5 @@
 require '../bootstrap.php';
 require '../PerfectApplication.php';
 
-$app = new PerfectApplication(false);
+$app = new PerfectApplication(true);
 $app->run();
