@@ -62,18 +62,18 @@ class UserRepository extends DbRepository
         return sha1($password . 'SecretKey');
     }
 
-    public function fetchByUserName($user_name)
+    public function fetchByUserName($username)
     {
-        $sql = "SELECT * FROM user WHERE user_name = :user_name";
+        $sql = "SELECT * FROM users WHERE username = :username";
 
-        return $this->fetch($sql, array(':user_name' => $user_name));
+        return $this->fetch($sql, array(':username' => $username));
     }
 
-    public function isUniqueUserName($user_name)
+    public function isUniqueUserName($username)
     {
-        $sql = "SELECT COUNT(id) as count FROM user WHERE user_name = :user_name";
+        $sql = "SELECT COUNT(id) as count FROM user WHERE username = :username";
 
-        $row = $this->fetch($sql, array(':user_name' => $user_name));
+        $row = $this->fetch($sql, array(':username' => $username));
         if ($row['count'] === '0') {
             return true;
         }
