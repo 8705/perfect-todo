@@ -7,18 +7,32 @@
  */
 class TaskRepository extends DbRepository
 {
-    public function insert($user_name, $password)
+    public function fetchAllTasksByUserId($user_id) {
+        $sql = "
+            SELECT t.*, p.*, u.*
+            FROM tasks t
+            LEFT JOIN projects p
+                ON p.id = t.project_id
+            LEFT JOIN users u
+                ON p.user_id = :user_id
+            ORDER BY t.created DESC
+        ";
+
+        return $this->fetchAll($sql, array(':user_id' => $user_id));
+    }
+
+    public function insert($username, $password)
     {
         $password = $this->hashPassword($password);
         $now = new DateTime();
 
         $sql = "
-            INSERT INTO user(user_name, password, created_at)
-                VALUES(:user_name, :password, :created_at)
+            INSERT INTO user(username, password, created_at)
+                VALUES(:username, :password, :created_at)
         ";
 
         $stmt = $this->execute($sql, array(
-            ':user_name'  => $user_name,
+            ':username'  => $username,
             ':password'   => $password,
             ':created_at' => $now->format('Y-m-d H:i:s'),
         ));
@@ -29,18 +43,18 @@ class TaskRepository extends DbRepository
         return sha1($password . 'SecretKey');
     }
 
-    public function fetchByUserName($user_name)
+    public function fetchByUserName($username)
     {
-        $sql = "SELECT * FROM user WHERE user_name = :user_name";
+        $sql = "SELECT * FROM user WHERE username = :username";
 
-        return $this->fetch($sql, array(':user_name' => $user_name));
+        return $this->fetch($sql, array(':username' => $username));
     }
 
-    public function isUniqueUserName($user_name)
+    public function isUniqueUserName($username)
     {
-        $sql = "SELECT COUNT(id) as count FROM user WHERE user_name = :user_name";
+        $sql = "SELECT COUNT(id) as count FROM user WHERE username = :username";
 
-        $row = $this->fetch($sql, array(':user_name' => $user_name));
+        $row = $this->fetch($sql, array(':username' => $username));
         if ($row['count'] === '0') {
             return true;
         }

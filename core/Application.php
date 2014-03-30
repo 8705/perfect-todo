@@ -28,7 +28,7 @@ abstract class Application
 
     /**
      * デバッグモードを設定
-     * 
+     *
      * @param boolean $debug
      */
     protected function setDebugMode($debug)
