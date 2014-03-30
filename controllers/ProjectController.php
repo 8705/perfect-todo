@@ -5,7 +5,7 @@
  *
  * @author 8705
  */
-class TaskController extends Controller
+class ProjectController extends Controller
 {
     //開発用に強制的にegamiユーザーでログイン
     protected function dev_login($user) {
@@ -78,6 +78,18 @@ class TaskController extends Controller
             'errors'    => $errors,
             '_token'    => $this->generateCsrfToken('account/signup'),
         ), 'signup');
+    }
+    public function addAction() {
+        if (!$this->request->isPost()) {
+            $this->forward404();
+        }
+        var_dump($_POST);exit;
+        //開発用ログイン
+        $user = $this->dev_login('egami');
+        if(!$user) {
+            $this->forward404();
+        }
+
     }
 
     public function indexAction()

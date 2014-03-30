@@ -12,7 +12,14 @@
             </li>
             <?php endforeach; ?>
         </ul>
-
+        <h2>プロジェクト追加</h2>
+        <form action="project/add" method="POST">
+            <p>
+                <input type="text" name="p_title">
+            </p>
+            <textarea name="p_content" id="" cols="30" rows="3"></textarea>
+            <input type="submit" value="submit">
+        </form>
     </div>
     <div class="col-md-9 tasks">
         <h2>タスクリスト</h2>
