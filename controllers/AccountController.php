@@ -60,7 +60,7 @@ class AccountController extends Controller
     public function signinAction()
     {
         if ($this->session->isAuthenticated()) {
-            return $this->redirect('/account');
+            return $this->redirect('/');
         }
 
         return $this->render(array(
