@@ -11,24 +11,18 @@ class AccountController extends Controller
 
     public function indexAction()
     {
-        if ($this->session->isAuthenticated()) {
-            return $this->redirect('/task');
-        }
+        if ($this->session->isAuthenticated()) return $this->redirect('/task');
 
-        return $this->render(array(
-            '_token' => $this->generateCsrfToken('account/index'),
-        ));
+        return $this->render(array('_token' => $this->generateCsrfToken('account/index')));
     }
 
     public function signupAction()
     {
-        if ($this->session->isAuthenticated()) return $this->redirect('/task');
-        if (!$this->request->isPost()) $this->forward404();
+        if ($this->session->isAuthenticated())  return $this->redirect('/');
+        if (!$this->request->isPost())          $this->forward404();
 
         $token = $this->request->getPost('_token');
-        if (!$this->checkCsrfToken('account/index', $token)) {
-            return $this->redirect('/account/index');
-        }
+        if (!$this->checkCsrfToken('account/index', $token)) return $this->redirect('/account/index');
 
         $postdata = array(
                           'username'   => $this->request->getPost('username'),
@@ -36,14 +30,14 @@ class AccountController extends Controller
                           'password'   => $this->request->getPost('password'),
                           );
 
-        $errors = $this->db_manager->get('User')->validate($postdata);
+        $errors = $this->db_manager->get('User')->validateSignUp($postdata);
 
-        if (count($errors) === 0) {
+        if (count($errors) === 0)
+        {
             $this->db_manager->get('User')->insert($postdata);
-
-            // $this->session->setAuthenticated(true);
-            // $user = $this->db_manager->get('User')->fetchByUserName($user_name);
-            // $this->session->set('user', $user);
+            $this->session->setAuthenticated(true);
+            $user = $this->db_manager->get('User')->fetchByUserName($postdata['username']);
+            $this->session->set('user', $user);
 
             return $this->redirect('/');
         }
@@ -59,52 +53,26 @@ class AccountController extends Controller
 
     public function signinAction()
     {
-        if ($this->session->isAuthenticated()) {
-            return $this->redirect('/');
-        }
-
-        return $this->render(array(
-            'user_name' => '',
-            'password'  => '',
-            '_token'    => $this->generateCsrfToken('account/signin'),
-        ));
-    }
-
-    public function authenticateAction()
-    {
-        if ($this->session->isAuthenticated()) {
-            return $this->redirect('/account');
-        }
-
-        if (!$this->request->isPost()) {
-            $this->forward404();
-        }
+        if ($this->session->isAuthenticated()) return $this->redirect('/');
+        if (!$this->request->isPost()) $this->forward404();
 
         $token = $this->request->getPost('_token');
-        if (!$this->checkCsrfToken('account/signin', $token)) {
-            return $this->redirect('/account/signin');
-        }
+        if (!$this->checkCsrfToken('account/index', $token)) return $this->redirect('/account/index');
 
-        $user_name = $this->request->getPost('user_name');
-        $password = $this->request->getPost('password');
+        $postdata = array(
+                          'username'   => $this->request->getPost('username'),
+                          'password'   => $this->request->getPost('password'),
+                          );
 
-        $errors = array();
+        $errors = $this->db_manager->get('User')->validateSignIn($postdata);
 
-        if (!strlen($user_name)) {
-            $errors[] = 'ユーザIDを入力してください';
-        }
-
-        if (!strlen($password)) {
-            $errors[] = 'パスワードを入力してください';
-        }
-
-        if (count($errors) === 0) {
+        if (count($errors) === 0)
+        {
             $user_repository = $this->db_manager->get('User');
-            $user = $user_repository->fetchByUserName($user_name);
+            $user = $user_repository->fetchByUserName($postdata['username']);
 
-            if (!$user
-                || ($user['password'] !== $user_repository->hashPassword($password))
-            ) {
+            if (!$user || ($user['password'] !== $user_repository->hashPassword($postdata['password'])))
+            {
                 $errors[] = 'ユーザIDかパスワードが不正です';
             } else {
                 $this->session->setAuthenticated(true);
@@ -115,11 +83,10 @@ class AccountController extends Controller
         }
 
         return $this->render(array(
-            'user_name' => $user_name,
-            'password'  => $password,
-            'errors'    => $errors,
-            '_token'    => $this->generateCsrfToken('account/signin'),
-        ), 'signin');
+                             'username' => '',
+                             'password'  => '',
+                             '_token'    => $this->generateCsrfToken('account/signin'),
+                            ));
     }
 
     public function signoutAction()
@@ -127,7 +94,7 @@ class AccountController extends Controller
         $this->session->clear();
         $this->session->setAuthenticated(false);
 
-        return $this->redirect('/account/signin');
+        return $this->redirect('/account/index');
     }
 
 }

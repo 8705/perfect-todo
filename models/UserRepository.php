@@ -35,7 +35,7 @@ class UserRepository extends DbRepository
         ));
     }
 
-    public function validate($postdata)
+    public function validateSignUp($postdata)
     {
         $errors = array();
 
@@ -57,6 +57,23 @@ class UserRepository extends DbRepository
         return $errors;
     }
 
+    public function validateSignIn($postdata)
+    {
+        $errors = array();
+
+        if (!strlen($postdata['username']))
+        {
+            $errors[] = 'ユーザIDを入力してください';
+        }
+
+        if (!strlen($postdata['password']))
+        {
+            $errors[] = 'パスワードを入力してください';
+        }
+
+        return $errors;
+    }
+
     public function hashPassword($password)
     {
         return sha1($password . 'SecretKey');
@@ -71,7 +88,7 @@ class UserRepository extends DbRepository
 
     public function isUniqueUserName($username)
     {
-        $sql = "SELECT COUNT(id) as count FROM user WHERE username = :username";
+        $sql = "SELECT COUNT(id) as count FROM users WHERE username = :username";
 
         $row = $this->fetch($sql, array(':username' => $username));
         if ($row['count'] === '0') {
@@ -81,15 +98,4 @@ class UserRepository extends DbRepository
         return false;
     }
 
-    public function fetchAllFollowingsByUserId($user_id)
-    {
-        $sql = "
-            SELECT u.*
-                FROM user u
-                    LEFT JOIN following f ON f.following_id = u.id
-                WHERE f.user_id = :user_id
-        ";
-
-        return $this->fetchAll($sql, array(':user_id' => $user_id));
-    }
 }
