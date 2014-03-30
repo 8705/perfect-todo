@@ -44,10 +44,10 @@ class Request
      * @param mixed $default 指定したキーが存在しない場合のデフォルト値
      * @return mixed
      */
-    public function getPost($name, $default = null)
+    public function getPost($default = null)
     {
-        if (isset($_POST[$name])) {
-            return $_POST[$name];
+        if (isset($_POST)) {
+            return $_POST;
         }
 
         return $default;
