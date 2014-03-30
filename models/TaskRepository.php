@@ -9,68 +9,65 @@ class TaskRepository extends DbRepository
 {
     public function fetchAllTasksByUserId($user_id) {
         $sql = "
-            SELECT t.*, p.*, u.*
+            SELECT
+                t.*,
+                p.id as p_id,
+                p.p_title as p_title,
+                u.id as u_id,
+                u.username as username
             FROM tasks t
             LEFT JOIN projects p
                 ON p.id = t.project_id
+
             LEFT JOIN users u
                 ON p.user_id = :user_id
+                WHERE t.del_flg = '0'
             ORDER BY t.created DESC
+
         ";
 
         return $this->fetchAll($sql, array(':user_id' => $user_id));
     }
 
-    public function insert($username, $password)
+    public function insert($project_id, $t_title, $t_content, $t_size)
     {
-        $password = $this->hashPassword($password);
         $now = new DateTime();
 
         $sql = "
-            INSERT INTO user(username, password, created_at)
-                VALUES(:username, :password, :created_at)
+            INSERT INTO tasks (project_id, t_title, t_content, t_size, created, modified)
+                VALUES(?,?,?,?,?,?)
         ";
 
         $stmt = $this->execute($sql, array(
-            ':username'  => $username,
-            ':password'   => $password,
-            ':created_at' => $now->format('Y-m-d H:i:s'),
+            $project_id,
+            $t_title,
+            $t_content,
+            $t_size,
+            $now->format('Y-m-d H:i:s'),
+            $now->format('Y-m-d H:i:s'),
         ));
     }
 
-    public function hashPassword($password)
+
+    public function fetchTaskById($task_id)
     {
-        return sha1($password . 'SecretKey');
+        $sql = "SELECT * FROM tasks WHERE id = :task_id";
+
+        return $this->fetch($sql, array(':task_id' => $task_id));
     }
 
-    public function fetchByUserName($username)
-    {
-        $sql = "SELECT * FROM user WHERE username = :username";
-
-        return $this->fetch($sql, array(':username' => $username));
-    }
-
-    public function isUniqueUserName($username)
-    {
-        $sql = "SELECT COUNT(id) as count FROM user WHERE username = :username";
-
-        $row = $this->fetch($sql, array(':username' => $username));
-        if ($row['count'] === '0') {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function fetchAllFollowingsByUserId($user_id)
-    {
+    public function delete($task_id) {
+        $now = new DateTime();
         $sql = "
-            SELECT u.*
-                FROM user u
-                    LEFT JOIN following f ON f.following_id = u.id
-                WHERE f.user_id = :user_id
-        ";
+            UPDATE tasks SET
+                del_flg = '1',
+                modified = ?
+                    WHERE id = ?
+            ";
 
-        return $this->fetchAll($sql, array(':user_id' => $user_id));
+        $stmt = $this->execute($sql, array(
+            $now->format('Y-m-d H:i:s'),
+            $task_id,
+        ));
     }
 }

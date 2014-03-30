@@ -5,7 +5,7 @@
  *
  * @author 8705
  */
-class ProjectController extends Controller
+class TaskController extends Controller
 {
     //開発用に強制的にegamiユーザーでログイン
     // protected function dev_login($user) {
@@ -14,20 +14,6 @@ class ProjectController extends Controller
     //     $this->session->set('user', $user);
     //     return $user;
     // }
-
-    public function signupAction()
-    {
-        if ($this->session->isAuthenticated()) {
-            return $this->redirect('/account');
-        }
-
-        return $this->render(array(
-            'user_name' => '',
-            'password'  => '',
-            '_token'    => $this->generateCsrfToken('account/signup'),
-        ));
-    }
-
 
     public function addAction() {
         if (!$this->request->isPost()) {
@@ -40,18 +26,29 @@ class ProjectController extends Controller
             $this->forward404();
         }
 
-        $p_title    = $this->request->getPost('p_title');
-        $p_content  = $this->request->getPost('p_content');
+        $p_id       = $this->request->getPost('p_id');
+        $project   = $this->db_manager->get('Project')->fetchProjectById($p_id);
+
+        $t_title    = $this->request->getPost('t_title');
+        $t_content  = $this->request->getPost('t_content');
+        $t_size     = $this->request->getPost('t_size');
+
+        if(!$project) {
+            $this->forward404('そんなプロジェクトありません');
+        }
 
         $errors = array();
 
-        if(!strlen($p_title)) {
-            $errors[] = 'プロジェクト名を入力してね';
+        if(!strlen($t_title)) {
+            $errors[] = 'タスク名を入力してね';
+        }
+        if(!$t_size) {
+            $errors[] = 'タスクの大きさを選んでね';
         }
 
         if (count($errors) === 0) {
             // $user = $this->session->get('user');
-            $this->db_manager->get('Project')->insert($user['id'], $p_title, $p_content);
+            $this->db_manager->get('Task')->insert($p_id, $t_title, $t_content, $t_size);
 
             return $this->redirect('/');
         }
@@ -78,12 +75,12 @@ class ProjectController extends Controller
     }
 
     public function deleteAction($params){
-        $project = $this->db_manager->get('Project')->fetchProjectById($params['property']);
-        if(!$project || $project['del_flg'] === '1') {
+        $task = $this->db_manager->get('Task')->fetchTaskById($params['property']);
+        if(!$task || $task['del_flg'] === '1') {
             $this->forward404('そのタスクはないです');
         }
 
-        $this->db_manager->get('Project')->delete($project['id']);
+        $this->db_manager->get('Task')->delete($task['id']);
 
         return $this->redirect('/');
 

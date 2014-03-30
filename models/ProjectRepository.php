@@ -7,20 +7,20 @@
  */
 class ProjectRepository extends DbRepository
 {
-    public function insert($username, $password)
+    public function insert($user_id, $p_title, $p_content)
     {
-        $password = $this->hashPassword($password);
         $now = new DateTime();
 
         $sql = "
-            INSERT INTO user(username, password, created_at)
-                VALUES(:username, :password, :created_at)
+            INSERT INTO projects(user_id, p_title, p_content, created)
+                VALUES(:user_id, :p_title, :p_content,:created)
         ";
 
         $stmt = $this->execute($sql, array(
-            ':username'  => $username,
-            ':password'   => $password,
-            ':created_at' => $now->format('Y-m-d H:i:s'),
+            ':user_id'  => $user_id,
+            ':p_title'   => $p_title,
+            ':p_content'   => $p_content,
+            ':created' => $now->format('Y-m-d H:i:s'),
         ));
     }
 
@@ -30,45 +30,33 @@ class ProjectRepository extends DbRepository
                 FROM projects p
                     LEFT JOIN users u ON p.user_id = u.id
                 WHERE u.id = :user_id
+                    AND p.del_flg = '0'
                 ORDER BY p.created DESC
         ";
 
         return $this->fetchAll($sql, array(':user_id' => $user_id));
     }
 
-    public function hashPassword($password)
+
+    public function fetchProjectById($project_id)
     {
-        return sha1($password . 'SecretKey');
+        $sql = "SELECT * FROM projects WHERE id = :project_id";
+
+        return $this->fetch($sql, array(':project_id' => $project_id));
     }
 
-    public function fetchByUserName($username)
-    {
-        $sql = "SELECT * FROM user WHERE username = :username";
-
-        return $this->fetch($sql, array(':username' => $username));
-    }
-
-    public function isUniqueUserName($username)
-    {
-        $sql = "SELECT COUNT(id) as count FROM user WHERE username = :username";
-
-        $row = $this->fetch($sql, array(':username' => $username));
-        if ($row['count'] === '0') {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function fetchAllFollowingsByUserId($user_id)
-    {
+    public function delete($project_id) {
+        $now = new DateTime();
         $sql = "
-            SELECT u.*
-                FROM user u
-                    LEFT JOIN following f ON f.following_id = u.id
-                WHERE f.user_id = :user_id
-        ";
+            UPDATE projects SET
+                del_flg = '1',
+                modified = ?
+                    WHERE id = ?
+            ";
 
-        return $this->fetchAll($sql, array(':user_id' => $user_id));
+        $stmt = $this->execute($sql, array(
+            $now->format('Y-m-d H:i:s'),
+            $project_id,
+        ));
     }
 }
