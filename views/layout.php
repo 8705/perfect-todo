@@ -3,9 +3,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?php if (isset($title)): echo $this->escape($title) . ' - ';
-        endif; ?>Perfect Todo</title>
-
+    <title><?php if (isset($title)): echo $this->escape($title) . ' - '; endif; ?>Perfect Todo</title>
     <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css" />
 

@@ -23,7 +23,7 @@ abstract class Application
     {
         $this->setDebugMode($debug);
         $this->initialize();
-        //$this->configure();
+        $this->configure();
     }
 
     /**
