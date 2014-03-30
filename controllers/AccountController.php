@@ -23,12 +23,6 @@ class AccountController extends Controller
         $post = $this->request->getPost();
         if (!$this->checkCsrfToken('account/index', $post['_token'])) return $this->redirect('/account/index');
 
-        $post = array(
-                          'username'   => $this->request->getPost('username'),
-                          'mail'       => $this->request->getPost('mail'),
-                          'password'   => $this->request->getPost('password'),
-                          );
-
         $errors = $this->db_manager->get('User')->validateSignUp($post);
 
         if (count($errors) === 0)
