@@ -11,7 +11,7 @@ class AccountController extends Controller
 
     public function indexAction()
     {
-        if ($this->session->isAuthenticated()) return $this->redirect('/task');
+        if ($this->session->isAuthenticated()) return $this->redirect('/');
         return $this->render(array('_token' => $this->generateCsrfToken('account/index')));
     }
 
@@ -35,13 +35,14 @@ class AccountController extends Controller
             return $this->redirect('/');
         }
 
-        return $this->render(array(
-            'username'  => $post['username'],
-            'mail'      => $post['mail'],
-            'password'  => $post['password'],
-            'errors'    => $errors,
-            '_token'    => $this->generateCsrfToken('account/index'),
-        ), 'index');
+        return $this->render(
+            array('username'  => $post['username'],
+                  'mail'      => $post['mail'],
+                  'password'  => $post['password'],
+                  'errors'    => $errors,
+                  '_token'    => $this->generateCsrfToken('account/index')),
+            'index'
+        );
     }
 
     public function signinAction()
@@ -71,11 +72,11 @@ class AccountController extends Controller
             }
         }
 
-        return $this->render(array(
-                             'username' => '',
-                             'password'  => '',
-                             '_token'    => $this->generateCsrfToken('account/signin'),
-                            ));
+        return $this->render(
+            array('username'    => '',
+                  'password'    => '',
+                  '_token'      => $this->generateCsrfToken('account/signin'))
+        );
     }
 
     public function signoutAction()

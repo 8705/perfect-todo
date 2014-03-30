@@ -7,66 +7,59 @@
  */
 class UserRepository extends DbRepository
 {
-    public function insert($postdata)
+    public function insert($post)
     {
-        $postdata['password'] = $this->hashPassword($postdata['password']);
+        $post['password'] = $this->hashPassword($post['password']);
         $now = new DateTime();
 
-        $sql = "INSERT INTO users (
-                                   username,
+        $sql = "INSERT INTO users (username,
                                    mail,
                                    password,
                                    created,
                                    modified
-                                   ) VALUES (
-                                   :username,
-                                   :mail,
-                                   :password,
-                                   :created,
-                                   :modified
-                                   )";
+                                   ) VALUES (?, ?, ?, ?, ?)";
 
-        $stmt = $this->execute($sql, array(
-            ':username' => $postdata['username'],
-            ':mail'     => $postdata['mail'],
-            ':password' => $postdata['password'],
-            ':created'  => $now->format('Y-m-d H:i:s'),
-            ':modified' => $now->format('Y-m-d H:i:s'),
-        ));
+        $stmt = $this->execute(
+                    $sql,
+                    array($post['username'],
+                          $post['mail'],
+                          $post['password'],
+                          $now->format('Y-m-d H:i:s'),
+                          $now->format('Y-m-d H:i:s'))
+                );
     }
 
-    public function validateSignUp($postdata)
+    public function validateSignUp($post)
     {
         $errors = array();
 
-        if (!strlen($postdata['username'])) {
+        if (!strlen($post['username'])) {
             $errors[] = 'ユーザIDを入力してください';
+        } else if (!preg_match('/^\w{3,20}$/', $post['username'])) {
+            $errors[] = 'ユーザIDは半角英数字およびアンダースコアを3 ～ 20 文字以内で入力してください';
+        } else if (!$this->isUniqueUserName($post['username'])) {
+            $errors[] = 'ユーザIDは既に使用されています';
         }
-        //  else if (!preg_match('/^\w{3,20}$/', $postdata['username'])) {
-        //     $errors[] = 'ユーザIDは半角英数字およびアンダースコアを3 ～ 20 文字以内で入力してください';
-        // } else if (!$this->db_manager->get('User')->isUniqueUserName($postdata['username'])) {
-        //     $errors[] = 'ユーザIDは既に使用されています';
-        // }
 
-        if (!strlen($postdata['password'])) {
+        if (!strlen($post['password'])) {
             $errors[] = 'パスワードを入力してください';
-        } else if (!(4 <= strlen($postdata['password']) and strlen($postdata['password']) <= 30)) {
+        } else if (!(4 <= strlen($post['password']) and strlen($post['password']) <= 30)) {
             $errors[] = 'パスワードは4 ～ 30 文字以内で入力してください';
         }
 
         return $errors;
     }
 
-    public function validateSignIn($postdata)
+    public function validateSignIn($post)
     {
         $errors = array();
 
-        if (!strlen($postdata['username']))
+        if (!strlen($post['username']))
         {
             $errors[] = 'ユーザIDを入力してください';
         }
 
-        if (!strlen($postdata['password']))
+        if (!strlen($post['password']))
         {
             $errors[] = 'パスワードを入力してください';
         }
@@ -81,16 +74,16 @@ class UserRepository extends DbRepository
 
     public function fetchByUserName($username)
     {
-        $sql = "SELECT * FROM users WHERE username = :username";
+        $sql = "SELECT * FROM users WHERE username = ?";
 
-        return $this->fetch($sql, array(':username' => $username));
+        return $this->fetch($sql, array($username));
     }
 
     public function isUniqueUserName($username)
     {
-        $sql = "SELECT COUNT(id) as count FROM users WHERE username = :username";
+        $sql = "SELECT COUNT(id) as count FROM users WHERE username = ?";
 
-        $row = $this->fetch($sql, array(':username' => $username));
+        $row = $this->fetch($sql, array($username));
         if ($row['count'] === '0') {
             return true;
         }
