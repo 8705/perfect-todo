@@ -23,12 +23,12 @@ abstract class Application
     {
         $this->setDebugMode($debug);
         $this->initialize();
-        //$this->configure();
+        $this->configure();
     }
 
     /**
      * デバッグモードを設定
-     * 
+     *
      * @param boolean $debug
      */
     protected function setDebugMode($debug)

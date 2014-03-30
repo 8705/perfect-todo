@@ -7,7 +7,13 @@
  */
 class TaskController extends Controller
 {
-   // protected $auth_actions = array('index', 'signout', 'follow');
+    //開発用に強制的にegamiユーザーでログイン
+    protected function dev_login($user) {
+        $user = $this->db_manager->get('User')->fetchByUserName($user);
+        $this->session->setAuthenticated(true);
+        $this->session->set('user', $user);
+        return $user;
+    }
 
     public function signupAction()
     {
@@ -76,9 +82,21 @@ class TaskController extends Controller
 
     public function indexAction()
     {
-        $user = 'ishino';
+        // $user        = $this->session->get('user');
+        // $user = $this->db_manager->get('User')->fetchByUserName($user['username']);
+
+        //開発用ログイン
+        $user = $this->dev_login('egami');
+
+        if(!$user) {
+            $this->forward404();
+        }
+        $tasks      = $this->db_manager->get('Task')->fetchAllTasksByUserId($user['id']);
+        $projects   = $this->db_manager->get('Project')->fetchAllProjectsByUserId($user['id']);
         return $this->render(array(
             'user'       => $user,
+            'tasks'   => $tasks,
+            'projects'   => $projects
         ));
     }
 
@@ -180,7 +198,7 @@ class TaskController extends Controller
         $user = $this->session->get('user');
 
         $following_repository = $this->db_manager->get('Following');
-        if ($user['id'] !== $follow_user['id'] 
+        if ($user['id'] !== $follow_user['id']
             && !$following_repository->isFollowing($user['id'], $follow_user['id'])
         ) {
             $following_repository->insert($user['id'], $follow_user['id']);
