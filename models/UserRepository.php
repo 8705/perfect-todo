@@ -7,21 +7,54 @@
  */
 class UserRepository extends DbRepository
 {
-    public function insert($username, $password)
+    public function insert($postdata)
     {
-        $password = $this->hashPassword($password);
+        $postdata['password'] = $this->hashPassword($postdata['password']);
         $now = new DateTime();
 
-        $sql = "
-            INSERT INTO user(username, password, created_at)
-                VALUES(:username, :password, :created_at)
-        ";
+        $sql = "INSERT INTO users (
+                                   username,
+                                   mail,
+                                   password,
+                                   created,
+                                   modified
+                                   ) VALUES (
+                                   :username,
+                                   :mail,
+                                   :password,
+                                   :created,
+                                   :modified
+                                   )";
 
         $stmt = $this->execute($sql, array(
-            ':username'  => $username,
-            ':password'   => $password,
-            ':created_at' => $now->format('Y-m-d H:i:s'),
+            ':username' => $postdata['username'],
+            ':mail'     => $postdata['mail'],
+            ':password' => $postdata['password'],
+            ':created'  => $now->format('Y-m-d H:i:s'),
+            ':modified' => $now->format('Y-m-d H:i:s'),
         ));
+    }
+
+    public function validate($postdata)
+    {
+        $errors = array();
+
+        if (!strlen($postdata['username'])) {
+            $errors[] = 'ユーザIDを入力してください';
+        }
+        //  else if (!preg_match('/^\w{3,20}$/', $postdata['username'])) {
+        //     $errors[] = 'ユーザIDは半角英数字およびアンダースコアを3 ～ 20 文字以内で入力してください';
+        // } else if (!$this->db_manager->get('User')->isUniqueUserName($postdata['username'])) {
+        //     $errors[] = 'ユーザIDは既に使用されています';
+        // }
+
+        if (!strlen($postdata['password'])) {
+            $errors[] = 'パスワードを入力してください';
+        } else if (!(4 <= strlen($postdata['password']) and strlen($postdata['password']) <= 30)) {
+            $errors[] = 'パスワードは4 ～ 30 文字以内で入力してください';
+        }
+
+        return $errors;
     }
 
     public function hashPassword($password)
