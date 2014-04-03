@@ -7,7 +7,7 @@
  */
 class AccountController extends Controller
 {
-    protected $auth_actions = array('signout', 'follow');
+    protected $auth_actions = array('signout');
 
     public function indexAction()
     {

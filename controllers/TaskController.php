@@ -7,20 +7,12 @@
  */
 class TaskController extends Controller
 {
-    //開発用に強制的にegamiユーザーでログイン
-    // protected function dev_login($user) {
-    //     $user = $this->db_manager->get('User')->fetchByUserName($user);
-    //     $this->session->setAuthenticated(true);
-    //     $this->session->set('user', $user);
-    //     return $user;
-    // }
+    protected $auth_actions = array('index', 'add', 'delete');
 
     public function addAction() {
         if (!$this->request->isPost()) {
             $this->forward404();
         }
-        //開発用ログイン
-        // $user = $this->dev_login('egami');
         $user        = $this->session->get('user');
         if(!$user) {
             $this->forward404();
@@ -48,7 +40,6 @@ class TaskController extends Controller
         }
 
         if (count($errors) === 0) {
-            // $user = $this->session->get('user');
             $this->db_manager->get('Task')->insert($p_id, $t_title, $t_content, $t_size);
 
             return $this->redirect('/');
@@ -59,9 +50,6 @@ class TaskController extends Controller
     {
         $user        = $this->session->get('user');
         $user = $this->db_manager->get('User')->fetchByUserName($user['username']);
-
-        //開発用ログイン
-        // $user = $this->dev_login('egami');
 
         if(!$user) {
             $this->forward404();
