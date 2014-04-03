@@ -13,7 +13,7 @@
             <?php endforeach; ?>
         </ul>
         <h2>プロジェクト追加</h2>
-        <form action="project/add" method="POST">
+        <form action="/project/add" method="POST">
             <p>
                 <input type="text" name="p_title">
             </p>
@@ -21,7 +21,7 @@
             <input type="submit" value="submit">
         </form>
         <h2>タスク追加</h2>
-        <form action="task/add" method="POST">
+        <form action="/task/add" method="POST">
             <p>
                 <select name="p_id" id="">
                     <option value="">プロジェクトを選択</option>

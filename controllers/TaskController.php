@@ -21,17 +21,18 @@ class TaskController extends Controller
         }
         //開発用ログイン
         // $user = $this->dev_login('egami');
-
+        $user        = $this->session->get('user');
         if(!$user) {
             $this->forward404();
         }
 
-        $p_id       = $this->request->getPost('p_id');
-        $project   = $this->db_manager->get('Project')->fetchProjectById($p_id);
+        $data       = $this->request->getPost();
+        $p_id       = $data['p_id'];
+        $project    = $this->db_manager->get('Project')->fetchProjectById($p_id);
 
-        $t_title    = $this->request->getPost('t_title');
-        $t_content  = $this->request->getPost('t_content');
-        $t_size     = $this->request->getPost('t_size');
+        $t_title    = $data['t_title'];
+        $t_content  = $data['t_content'];
+        $t_size     = $data['t_size'];
 
         if(!$project) {
             $this->forward404('そんなプロジェクトありません');

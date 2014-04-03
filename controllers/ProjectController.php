@@ -30,18 +30,20 @@ class ProjectController extends Controller
 
 
     public function addAction() {
+
         if (!$this->request->isPost()) {
             $this->forward404();
         }
+        $user        = $this->session->get('user');
         //開発用ログイン
         // $user = $this->dev_login('egami');
 
         if(!$user) {
             $this->forward404();
         }
-
-        $p_title    = $this->request->getPost('p_title');
-        $p_content  = $this->request->getPost('p_content');
+        $data       = $this->request->getPost();
+        $p_title    = $data['p_title'];
+        $p_content  = $data['p_content'];
 
         $errors = array();
 

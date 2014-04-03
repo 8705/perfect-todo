@@ -8,8 +8,7 @@
 class TaskRepository extends DbRepository
 {
     public function fetchAllTasksByUserId($user_id) {
-        $sql = "
-            SELECT
+        $sql = "SELECT
                 t.*,
                 p.id as p_id,
                 p.p_title as p_title,
@@ -18,13 +17,10 @@ class TaskRepository extends DbRepository
             FROM tasks t
             LEFT JOIN projects p
                 ON p.id = t.project_id
-
             LEFT JOIN users u
                 ON p.user_id = :user_id
                 WHERE t.del_flg = '0'
-            ORDER BY t.created DESC
-
-        ";
+            ORDER BY t.created DESC";
 
         return $this->fetchAll($sql, array(':user_id' => $user_id));
     }
@@ -33,10 +29,8 @@ class TaskRepository extends DbRepository
     {
         $now = new DateTime();
 
-        $sql = "
-            INSERT INTO tasks (project_id, t_title, t_content, t_size, created, modified)
-                VALUES(?,?,?,?,?,?)
-        ";
+        $sql = "INSERT INTO tasks (project_id, t_title, t_content, t_size, created, modified)
+                VALUES(?,?,?,?,?,?)";
 
         $stmt = $this->execute($sql, array(
             $project_id,
