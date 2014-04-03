@@ -2,8 +2,6 @@
 
 require '../bootstrap.php';
 require '../PerfectApplication.php';
-
+error_reporting(E_ALL);
 $app = new PerfectApplication(true);
-echo "ok";
-exit;
 $app->run();
