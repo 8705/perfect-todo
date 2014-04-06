@@ -7,7 +7,7 @@
         <ul class="list-group">
             <?php foreach ($projects as $project): ?>
             <li class="project list-group-item">
-                <p><?php echo $this->escape($project['p_title']); ?><span><a href="/project/delete/<?php echo $this->escape($project['id']); ?>">x</a></span></p>
+                <p><a href="/project/view/<?php echo $this->escape($project['id']); ?>"><?php echo $this->escape($project['p_title']); ?></a><span><a href="/project/delete/<?php echo $this->escape($project['id']); ?>">x</a></span></p>
                 <p class="content"><?php echo $this->escape($project['p_content']); ?></p>
             </li>
             <?php endforeach; ?>
@@ -43,14 +43,22 @@
     </div>
     <div class="col-md-9 tasks">
         <h2>タスクリスト</h2>
-        <ul class="list-group">
-            <?php foreach ($tasks as $task): ?>
-            <li class="task list-group-item">
-                <p><span class="label label-<?php echo $this->escape($task['t_size']); ?>"><?php echo $this->escape($task['t_size']); ?></span><?php echo $this->escape($task['t_title']); ?>(<?php echo $this->escape($task['p_title']); ?>)</p>
-                <p class="content"><?php echo $this->escape($task['t_content']); ?><span>[ <?php echo $this->escape($task['created']); ?>に<?php echo $this->escape($task['username']) ?>が作成 ]</span><span><a href="/task/delete/<?php echo $this->escape($task['id']); ?>">x</a></span></p>
-            </li>
-            <?php endforeach; ?>
-        </ul>
+        <form action="/project/index" method="POST">
+            <ul class="list-group">
+                <?php foreach ($tasks as $task): ?>
+                    <li class="task list-group-item <?php if ($task['t_is_done'] == 1) echo 'done'; ?>">
+                        <p>
+                            <input type="hidden" name="<?php echo $task['id']; ?>" value="0">
+                            <input type="checkbox" name="<?php echo $task['id']; ?>" value="1" <?php if ($task['t_is_done'] == 1) echo "checked='checked'"; ?> >
+                            <span class="label label-<?php echo $this->escape($task['t_size']); ?>"><?php echo $this->escape($task['t_size']); ?></span>
+                            <?php echo $this->escape($task['t_title']); ?>(<?php echo $this->escape($task['p_title']); ?>)
+                        </p>
+                        <p class="content"><?php echo $this->escape($task['t_content']); ?><span>[ <?php echo $this->escape($task['created']); ?>に<?php echo $this->escape($task['username']) ?>が作成 ]</span><span><a href="/task/delete/<?php echo $this->escape($task['id']); ?>">x</a></span></p>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            <input type='submit' value='状態を更新'>
+        </form>
     </div>
     </div>
 </div>

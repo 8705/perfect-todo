@@ -74,4 +74,5 @@ class TaskController extends Controller
         return $this->redirect('/');
 
     }
+
 }

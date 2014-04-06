@@ -12,12 +12,21 @@ class UserRepository extends DbRepository
         $post['password'] = $this->hashPassword($post['password']);
         $now = new DateTime();
 
-        $sql = "INSERT INTO users (username,
-                                   mail,
-                                   password,
-                                   created,
-                                   modified
-                                   ) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (
+                    username,
+                    mail,
+                    password,
+                    created,
+                    modified
+                )
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )";
 
         $stmt = $this->execute(
                     $sql,

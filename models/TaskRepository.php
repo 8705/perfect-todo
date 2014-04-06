@@ -22,6 +22,16 @@ class TaskRepository extends DbRepository
         return $this->fetchAll($sql, array(':user_id' => $user_id));
     }
 
+    public function fetchAllTasksByProjectId($project_id) {
+        $sql = "SELECT *
+                    FROM tasks
+                    WHERE project_id = ? and del_flg = '0'
+                    ORDER BY created DESC
+                ";
+
+        return $this->fetchAll($sql, array($project_id));
+    }
+
     public function insert($project_id, $t_title, $t_content, $t_size)
     {
         $now = new DateTime();
@@ -52,6 +62,18 @@ class TaskRepository extends DbRepository
         $sql = "UPDATE tasks SET del_flg = '1', modified = ? WHERE id = ?";
 
         $stmt = $this->execute($sql, array(
+            $now->format('Y-m-d H:i:s'),
+            $task_id,
+        ));
+    }
+
+    public function updateStatus($task_id, $t_is_done)
+    {
+        $now = new DateTime();
+        $sql = "UPDATE tasks SET t_is_done = ?, modified = ? WHERE id = ?";
+
+        $stmt = $this->execute($sql, array(
+            $t_is_done,
             $now->format('Y-m-d H:i:s'),
             $task_id,
         ));
