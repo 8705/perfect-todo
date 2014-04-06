@@ -7,7 +7,7 @@
  */
 class PerfectApplication extends Application
 {
-    protected $login_action = array('account', 'signin');
+    protected $login_action = array('account', 'index');
 
     public function getRootDir()
     {
