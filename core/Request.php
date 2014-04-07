@@ -28,10 +28,10 @@ class Request
      * @param mixed $default 指定したキーが存在しない場合のデフォルト値
      * @return mixed
      */
-    public function getGet($name, $default = null)
+    public function getGet($default = null)
     {
-        if (isset($_GET[$name])) {
-            return $_GET[$name];
+        if (isset($_GET)) {
+            return $_GET;
         }
 
         return $default;

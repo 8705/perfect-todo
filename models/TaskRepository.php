@@ -7,59 +7,74 @@
  */
 class TaskRepository extends DbRepository
 {
-    public function fetchAllTasksByUserId($user_id) {
-        $sql = "SELECT t.*,
-                       p.id as p_id,
-                       p.p_title as p_title,
-                       u.id as u_id,
-                       u.username as username
+    public function fetchAllByUserId($user_id)
+    {
+        $sql = "SELECT t.*
                     FROM tasks t
-                        LEFT JOIN projects p ON p.id = t.project_id
-                        LEFT JOIN users u ON p.user_id = u.id
-                    WHERE p.user_id = :user_id and t.del_flg = '0'
-                    ORDER BY t.created DESC";
+                        LEFT JOIN projects p ON p.project_id = t.project_id
+                        LEFT JOIN users u ON p.user_id = u.user_id
+                    WHERE p.user_id = ? and t.task_del_flg = '0'
+                    ORDER BY t.task_created DESC";
 
-        return $this->fetchAll($sql, array(':user_id' => $user_id));
+        return $this->fetchAll($sql, array($user_id));
     }
 
-    public function fetchAllTasksByProjectId($project_id) {
+    public function fetchAllAndProjectNameByUserId($user_id)
+    {
+        $sql = "SELECT t.*, p.project_name
+                    FROM tasks t
+                        LEFT JOIN projects p ON p.project_id = t.project_id
+                        LEFT JOIN users u ON p.user_id = u.user_id
+                    WHERE p.user_id = ? and t.task_del_flg = '0'
+                    ORDER BY t.task_created DESC";
+
+        return $this->fetchAll($sql, array($user_id));
+    }
+
+    public function fetchAllByProjectId($project_id) {
         $sql = "SELECT *
                     FROM tasks
-                    WHERE project_id = ? and del_flg = '0'
-                    ORDER BY created DESC
+                    WHERE project_id = ? and task_del_flg = '0'
+                    ORDER BY task_created DESC
                 ";
 
         return $this->fetchAll($sql, array($project_id));
     }
 
-    public function insert($project_id, $t_title, $t_content, $t_size)
+    public function insert($post)
     {
         $now = new DateTime();
 
-        $sql = "INSERT INTO tasks (project_id, t_title, t_content, t_size, created, modified)
-                VALUES(?,?,?,?,?,?)";
+        $sql = "INSERT INTO tasks (project_id,
+                                   task_name,
+                                   task_text,
+                                   task_size,
+                                   task_created,
+                                   task_modified
+                                   )
+                    VALUES(?,?,?,?,?,?)";
 
         $stmt = $this->execute($sql, array(
-            $project_id,
-            $t_title,
-            $t_content,
-            $t_size,
+            $post['project_id'],
+            $post['task_name'],
+            $post['task_text'],
+            $post['task_size'],
             $now->format('Y-m-d H:i:s'),
             $now->format('Y-m-d H:i:s'),
         ));
     }
 
 
-    public function fetchTaskById($task_id)
+    public function fetchById($task_id)
     {
-        $sql = "SELECT * FROM tasks WHERE id = :task_id";
+        $sql = "SELECT * FROM tasks WHERE task_id = ?";
 
-        return $this->fetch($sql, array(':task_id' => $task_id));
+        return $this->fetch($sql, array($task_id));
     }
 
     public function delete($task_id) {
         $now = new DateTime();
-        $sql = "UPDATE tasks SET del_flg = '1', modified = ? WHERE id = ?";
+        $sql = "UPDATE tasks SET task_del_flg = '1', task_modified = ? WHERE task_id = ?";
 
         $stmt = $this->execute($sql, array(
             $now->format('Y-m-d H:i:s'),
@@ -67,15 +82,33 @@ class TaskRepository extends DbRepository
         ));
     }
 
-    public function updateStatus($task_id, $t_is_done)
+    public function updateIsDone($task_id, $task_is_done)
     {
         $now = new DateTime();
-        $sql = "UPDATE tasks SET t_is_done = ?, modified = ? WHERE id = ?";
+        $sql = "UPDATE tasks SET task_is_done = ?, task_modified = ? WHERE task_id = ?";
 
         $stmt = $this->execute($sql, array(
-            $t_is_done,
+            $task_is_done,
             $now->format('Y-m-d H:i:s'),
             $task_id,
         ));
+    }
+
+    public function validateAdd($post)
+    {
+        $task_name  = $post['task_name'];
+        $task_size  = $post['task_size'];
+
+        $errors = array();
+
+        if(!strlen($task_name)) {
+            $errors[] = 'タスク名を入力してね';
+        }
+
+        if(!$task_size) {
+            $errors[] = 'タスクの大きさを選んでね';
+        }
+
+        return $errors;
     }
 }

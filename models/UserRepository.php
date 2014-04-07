@@ -9,15 +9,15 @@ class UserRepository extends DbRepository
 {
     public function insert($post)
     {
-        $post['password'] = $this->hashPassword($post['password']);
+        $post['user_password'] = $this->hashPassword($post['user_password']);
         $now = new DateTime();
 
         $sql = "INSERT INTO users (
-                    username,
-                    mail,
-                    password,
-                    created,
-                    modified
+                    user_name,
+                    user_mail,
+                    user_password,
+                    user_created,
+                    user_modified
                 )
                 VALUES
                 (
@@ -30,46 +30,44 @@ class UserRepository extends DbRepository
 
         $stmt = $this->execute(
                     $sql,
-                    array($post['username'],
-                          $post['mail'],
-                          $post['password'],
+                    array($post['user_name'],
+                          $post['user_mail'],
+                          $post['user_password'],
                           $now->format('Y-m-d H:i:s'),
                           $now->format('Y-m-d H:i:s'))
                 );
     }
 
-    public function validateSignUp($post)
+    public function validateRegister($post)
     {
         $errors = array();
 
-        if (!strlen($post['username'])) {
+        if (!strlen($post['user_name'])) {
             $errors[] = 'ユーザIDを入力してください';
-        } else if (!preg_match('/^\w{3,20}$/', $post['username'])) {
+        } else if (!preg_match('/^\w{3,20}$/', $post['user_name'])) {
             $errors[] = 'ユーザIDは半角英数字およびアンダースコアを3 ～ 20 文字以内で入力してください';
-        } else if (!$this->isUniqueUserName($post['username'])) {
+        } else if (!$this->isUniqueName($post['user_name'])) {
             $errors[] = 'ユーザIDは既に使用されています';
         }
 
-        if (!strlen($post['password'])) {
+        if (!strlen($post['user_password'])) {
             $errors[] = 'パスワードを入力してください';
-        } else if (!(4 <= strlen($post['password']) and strlen($post['password']) <= 30)) {
+        } else if (!(4 <= strlen($post['user_password']) && strlen($post['user_password']) <= 30)) {
             $errors[] = 'パスワードは4 ～ 30 文字以内で入力してください';
         }
 
         return $errors;
     }
 
-    public function validateSignIn($post)
+    public function validateLogIn($post)
     {
         $errors = array();
 
-        if (!strlen($post['username']))
-        {
+        if (!strlen($post['user_name'])) {
             $errors[] = 'ユーザIDを入力してください';
         }
 
-        if (!strlen($post['password']))
-        {
+        if (!strlen($post['user_password'])) {
             $errors[] = 'パスワードを入力してください';
         }
 
@@ -81,18 +79,18 @@ class UserRepository extends DbRepository
         return sha1($password . 'SecretKey');
     }
 
-    public function fetchByUserName($username)
+    public function fetchByName($user_name)
     {
-        $sql = "SELECT * FROM users WHERE username = ?";
+        $sql = "SELECT * FROM users WHERE user_name = ?";
 
-        return $this->fetch($sql, array($username));
+        return $this->fetch($sql, array($user_name));
     }
 
-    public function isUniqueUserName($username)
+    public function isUniqueName($user_name)
     {
-        $sql = "SELECT COUNT(id) as count FROM users WHERE username = ?";
+        $sql = "SELECT COUNT(user_id) as count FROM users WHERE user_name = ?";
 
-        $row = $this->fetch($sql, array($username));
+        $row = $this->fetch($sql, array($user_name));
         if ($row['count'] === '0') {
             return true;
         }
