@@ -43,10 +43,20 @@ class Response
      * @param integer $status_code
      * @param string $status_code
      */
-    public function setStatusCode($status_code, $status_text = '')
+    public function setStatusCode($code)
     {
-        $this->status_code = $status_code;
-        $this->status_text = $status_text;
+        switch($status_code){
+            case 302:
+                $this->status_code = $code;
+                $this->status_text = 'Found';
+                break;
+            case 404:
+                $this->status_code = $code;
+                $this->status_text = 'Not Found';
+                break:
+            default:
+                break;
+        }
     }
 
     /**
