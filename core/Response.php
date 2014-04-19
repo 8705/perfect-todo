@@ -24,7 +24,6 @@ class Response
             header($name . ': ' . $value);
         }
 
-        var_dump(headers_list());
         return $this->content;
     }
 
