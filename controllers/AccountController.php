@@ -29,9 +29,9 @@ class AccountController extends AppController
         }
 
         $post = $this->request->getPost();
-        if (!$this->checkCsrfToken('/account/index', $post['_token'])) {
-            return $this->redirect('/account/index');
-        }
+        // if (!$this->checkCsrfToken('/account/index', $post['_token'])) {
+        //     return $this->redirect('/account/index');
+        // }
 
         $errors = $this->db_manager->get('User')->validateRegister($post);
 
