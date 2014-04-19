@@ -17,13 +17,15 @@ class Response
      */
     public function send()
     {
+
         header('HTTP/1.1 ' . $this->status_code . ' ' . $this->status_text);
 
         foreach ($this->http_headers as $name => $value) {
             header($name . ': ' . $value);
         }
 
-        echo $this->content;
+        var_dump(headers_list());
+        return $this->content;
     }
 
     /**

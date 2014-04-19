@@ -171,12 +171,14 @@ abstract class Application
      *
      * @throws HttpNotFoundException ルートが見つからない場合
      */
-    public function run()
+    public function run($path = NULL)
     {
         try {
-            $params = $this->router->resolve($this->request->getPathInfo());
+            $getpath = $path ? $path : $this->request->getPathInfo(); 
+
+            $params = $this->router->resolve($getpath);
             if ($params === false) {
-                throw new HttpNotFoundException('No route found for ' . $this->request->getPathInfo());
+                throw new HttpNotFoundException('No route found for ' . $getpath);
             }
 
             $controller = $params['controller'];
@@ -190,7 +192,13 @@ abstract class Application
             $this->runAction($controller, $action);
         }
 
-        $this->response->send();
+        $content = $this->response->send();
+        if ($path) {
+            return $content;
+        } else {
+            echo $content;
+        }
+        
     }
 
     /**
