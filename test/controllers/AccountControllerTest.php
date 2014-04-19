@@ -1,18 +1,21 @@
 <?php
 
-require_once dirname(__FILE__).'/../../PerfectApplication_dev.php';
+require_once dirname(__FILE__).'/../PerfectUnit.php';
 
-class AccountControllerTest extends PHPUnit_Framework_TestCase
+class AccountControllerTest extends PerfectUnit
 {
-    public $app;
+    // public $app;
 
     public function setUp()
     {
-        $this->app = new PerfectApplication_dev(true);
+        parent::setUp();
+        // $this->app = new PerfectApplication_dev(true);
     }
 
     public function testIndex()
     {
-        $content = $this->app->run('/account/index');
+        $content = $this->dispatch('/account/index');
+        $this->assertContains('アカウント - Perfect Todo', $content);
+        // debug($content);
     }
 }
