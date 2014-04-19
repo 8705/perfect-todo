@@ -112,7 +112,7 @@ abstract class Controller
             $url = $protocol . $host . $base_url . $url;
         }
 
-        $this->response->setStatusCode(302, 'Found');
+        $this->response->setStatusCode(302);
         $this->response->setHttpHeader('Location', $url);
     }
 

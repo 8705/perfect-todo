@@ -174,7 +174,7 @@ abstract class Application
     public function run($path = NULL)
     {
         try {
-            $getpath = $path ? $path : $this->request->getPathInfo(); 
+            $getpath = $path ? $path : $this->request->getPathInfo();
 
             $params = $this->router->resolve($getpath);
             if ($params === false) {
@@ -198,7 +198,7 @@ abstract class Application
         } else {
             echo $content;
         }
-        
+
     }
 
     /**
@@ -255,7 +255,7 @@ abstract class Application
      */
     protected function render404Page($e)
     {
-        $this->response->setStatusCode(404, 'Not Found');
+        $this->response->setStatusCode(404);
         $message = $this->isDebugMode() ? $e->getMessage() : 'Page not found.';
         $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
