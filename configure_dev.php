@@ -1,6 +1,6 @@
 <?php
 
-    $database = 'perfect_todo';
+    $database = 'perfect_todo_dev';
     $user     = 'root';
     $password = 'vagrant';
 

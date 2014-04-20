@@ -10,5 +10,6 @@ $loader->registerDir(dirname(__FILE__).'/models');
 
 $loader->registerDir(dirname(__FILE__)."/test/core");
 $loader->registerDir(dirname(__FILE__)."/test/controllers");
+$loader->registerDir(dirname(__FILE__)."/test/models");
 
 $loader->register();

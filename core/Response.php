@@ -45,7 +45,7 @@ class Response
      */
     public function setStatusCode($code)
     {
-        switch($status_code){
+        switch($code){
             case 302:
                 $this->status_code = $code;
                 $this->status_text = 'Found';
@@ -53,7 +53,7 @@ class Response
             case 404:
                 $this->status_code = $code;
                 $this->status_text = 'Not Found';
-                break:
+                break;
             default:
                 break;
         }

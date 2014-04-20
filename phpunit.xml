@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-  bootstrap="bootstrap_dev.php">
-  <testsuite name="Sample">
+    bootstrap="bootstrap_dev.php">
+    <testsuite name="Sample">
     <directory>test</directory>
-  </testsuite>
+    </testsuite>
+    <php>
+        <var name="DB_DSN" value="mysql:dbname=perfect_todo_dev;host=localhost" />
+        <var name="DB_USER" value="root" />
+        <var name="DB_PASSWD" value="vagrant" />
+        <var name="DB_DBNAME" value="perfect_todo_dev" />
+    </php>
 </phpunit>
