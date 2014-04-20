@@ -79,6 +79,13 @@ class UserRepository extends DbRepository
         return sha1($password . 'SecretKey');
     }
 
+    public function fetchById($user_id)
+    {
+        $sql = "SELECT * FROM users WHERE user_id = ?";
+
+        return $this->fetch($sql, array($user_id));
+    }
+
     public function fetchByName($user_name)
     {
         $sql = "SELECT * FROM users WHERE user_name = ?";
