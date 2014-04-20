@@ -13,9 +13,8 @@ class PerfectUnit extends PHPUnit_Framework_TestCase
         $this->app = new PerfectApplication_dev(true);
 
         $this->token = 'q3p98fpeifhqpwef348pqc3yhpw348rcp3rvwe8pqytppweytp';
-        $_SERVER['SERVER_NAME'] = '';
-        $_SERVER['REQUEST_URI'] = '';
-        $_SESSION['csrf_tokens/_token'] = $this->token;
+        $_SERVER['SERVER_NAME'] = 'TestHost';
+        $_SESSION['csrf_toxkens/_token'] = $this->token;
     }
 
     public function get($path)
@@ -37,9 +36,12 @@ class PerfectUnit extends PHPUnit_Framework_TestCase
     public function header_is($type ,$param)
     {
         if ($type == 'Location') {
-            $param = 'http://'.$param;
+            $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+            $host     = $_SERVER['SERVER_NAME'];
+            $base_url = $_SERVER['REQUEST_URI'];
+            $param    = $protocol.$host.$base_url.$param;
         }
-        debug($this->header_info[$type]);
+
         $this->assertEquals($this->header_info[$type], $param);
     }
 
@@ -47,6 +49,7 @@ class PerfectUnit extends PHPUnit_Framework_TestCase
     {
         $this->xml = new DomDocument;
         $this->xml->loadXML($this->header_info['content']);
+
         $this->assertSelectEquals($selector, $text, TRUE, $this->xml);
     }
 
