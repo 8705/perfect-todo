@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<dataset>
+    <table name="users">
+        <column>user_id</column>
+        <column>user_name</column>
+        <column>user_mail</column>
+        <column>user_password</column>
+        <column>user_image</column>
+        <column>user_created</column>
+        <column>user_modified</column>
+        <column>user_del_flg</column>
+        <row>
+            <value>1</value>
+            <value>test</value>
+            <value>test@test.com</value>
+            <value>test</value>
+            <null />
+            <value>2014-04-20 17:15:23</value>
+            <value>2014-04-20 17:15:23</value>
+            <value>0</value>
+        </row>
+    </table>
+</dataset>
