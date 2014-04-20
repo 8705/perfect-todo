@@ -12,8 +12,8 @@ class AccountControllerTest extends PerfectUnit
 
     public function testIndex()
     {
-        $content = $this->dispatch('/account/index');
-        $this->assertContains('アカウント - Perfect Todo', $content);
+        $this->get('/account/index');
+        $this->text_is('#main div div div h2', 'ログイン');
     }
 
     public function testRegister()
@@ -21,11 +21,10 @@ class AccountControllerTest extends PerfectUnit
         $params = array('user_name' => 'ishino11',
                         'user_mail' => 'ishino11@gmail.com',
                         'user_password' => 'ishino11',
-                        '_token' => 'test_token',
                         );
-        $content = $this->post('/account/register', $params);
-
-        debug(headers_list());
-        $this->assertContains('タスクリスト', $content);
+        $this->post('/account/register', $params);
+        $this->header_is('status_code', 302);
+        $this->header_is('Location', '/account/index');
     }
+
 }

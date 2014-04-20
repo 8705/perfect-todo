@@ -24,7 +24,12 @@ class Response
             header($name . ': ' . $value);
         }
 
-        return $this->content;
+        $header_info = array('status_code' => $this->status_code,
+                             'status_text' => $this->status_text,
+                             'content'     => $this->content
+                             );
+        $header_info = array_merge($header_info, $this->http_headers);
+        return $header_info;
     }
 
     /**
@@ -45,17 +50,13 @@ class Response
      */
     public function setStatusCode($code)
     {
-        switch($status_code){
-            case 302:
-                $this->status_code = $code;
-                $this->status_text = 'Found';
-                break;
-            case 404:
-                $this->status_code = $code;
-                $this->status_text = 'Not Found';
-                break:
-            default:
-                break;
+        $status = array(200 => 'OK',
+                        302 => 'Found',
+                        404 => 'Not Found',
+                        );
+        if (array_key_exists($code, $status)) {
+            $this->status_code = $code;
+            $this->status_text = $status[$code];
         }
     }
 

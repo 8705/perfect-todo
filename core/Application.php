@@ -192,11 +192,11 @@ abstract class Application
             $this->runAction($controller, $action);
         }
 
-        $content = $this->response->send();
+        $header_info = $this->response->send();
         if ($path) {
-            return $content;
+            return $header_info;
         } else {
-            echo $content;
+            echo $header_info['content'];
         }
 
     }

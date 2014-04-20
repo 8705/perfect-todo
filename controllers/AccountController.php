@@ -15,7 +15,7 @@ class AccountController extends AppController
             return $this->redirect('/');
         }
 
-        return $this->render(array('_token' => $this->generateCsrfToken('/account/index')));
+        return $this->render(array('_token' => $this->generateCsrfToken('_token')));
     }
 
     public function registerAction()
@@ -29,9 +29,9 @@ class AccountController extends AppController
         }
 
         $post = $this->request->getPost();
-        // if (!$this->checkCsrfToken('/account/index', $post['_token'])) {
-        //     return $this->redirect('/account/index');
-        // }
+        if (!$this->checkCsrfToken('_token', $post['_token'])) {
+            return $this->redirect('/account/index');
+        }
 
         $errors = $this->db_manager->get('User')->validateRegister($post);
 
@@ -49,7 +49,7 @@ class AccountController extends AppController
                   'user_mail'       => $post['user_mail'],
                   'user_password'   => $post['user_password'],
                   'errors'          => $errors,
-                  '_token'          => $this->generateCsrfToken('/account/index')
+                  '_token'          => $this->generateCsrfToken('_token')
                   ),
                   'index'
             );
@@ -66,7 +66,7 @@ class AccountController extends AppController
         }
 
         $post = $this->request->getPost();
-        if (!$this->checkCsrfToken('/account/index', $post['_token'])) {
+        if (!$this->checkCsrfToken('_token', $post['_token'])) {
             return $this->redirect('/account/index');
         }
 
@@ -88,7 +88,7 @@ class AccountController extends AppController
 
         return $this->render(array('user_name'       => '',
                                    'user_password'   => '',
-                                   '_token'          => $this->generateCsrfToken('/account/login')
+                                   '_token'          => $this->generateCsrfToken('_token')
                           )
                 );
     }
