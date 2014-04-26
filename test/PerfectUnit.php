@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__).'/../PerfectApplication_dev.php';
 
-class PerfectUnit extends PHPUnit_Framework_TestCase
+abstract class PerfectUnit extends PHPUnit_Framework_TestCase
 {
     protected $app;
     protected $db_manager;
@@ -10,7 +10,7 @@ class PerfectUnit extends PHPUnit_Framework_TestCase
     protected $token;
     protected $header_info;
     
-    public function setup()
+    public function setUp()
     {
         $this->app        = new PerfectApplication_dev(true);
         $this->db_manager = $this->app->getDbManager();
@@ -63,7 +63,7 @@ class PerfectUnit extends PHPUnit_Framework_TestCase
             $this->session->setAuthenticated(true);
             $this->session->set('user', $user);
         } else {
-            echo 'そのUserIdはDBに登録されていません。';
+            echo 'user_id(='.$user_id.')はDBに登録されていません。';
             exit;
         }
     }
