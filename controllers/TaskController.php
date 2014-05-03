@@ -15,11 +15,6 @@ class TaskController extends AppController
             $this->forward404();
         }
 
-        $user        = $this->session->get('user');
-        if(!$user) {
-            $this->forward404();
-        }
-
         $post       = $this->request->getPost();
         $project    = $this->db_manager->get('Project')->fetchById($post['project_id']);
 
@@ -38,11 +33,6 @@ class TaskController extends AppController
 
     public function indexAction()
     {
-        $user = $this->session->get('user');
-
-        if(!$user) {
-            $this->forward404();
-        }
 
         $tasks      = $this->db_manager->get('Task')->fetchAllByUserId($user['user_id']);
         $projects   = $this->db_manager->get('Project')->fetchAllByUserId($user['user_id']);

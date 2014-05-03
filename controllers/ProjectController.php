@@ -7,18 +7,12 @@
  */
 class ProjectController extends AppController
 {
-    protected $auth_actions = array('index', 'add', 'delete');
+    protected $auth_actions = array('index', 'add', 'delete', 'view');
 
     public function addAction()
     {
 
         if (!$this->request->isPost()) {
-            $this->forward404();
-        }
-
-        $user = $this->session->get('user');
-
-        if(!$user) {
             $this->forward404();
         }
 
@@ -37,12 +31,6 @@ class ProjectController extends AppController
 
     public function indexAction()
     {
-        $user = $this->session->get('user');
-
-        if(!$user) {
-            $this->forward404();
-        }
-
         if ($this->request->isPost()) {
             $post = $this->request->getPost();
             foreach ($post as $task_id => $task_is_done) {
@@ -76,10 +64,6 @@ class ProjectController extends AppController
 
     public function viewAction($params)
     {
-
-        if (!$this->session->isAuthenticated()) {
-            return $this->redirect('/account/index');
-        }
 
         if ($this->request->isPost()) {
             $post = $this->request->getPost();
